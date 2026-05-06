@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy:     #0B1E3D;
+  --navy2:    #162E5C;
+  --sky:      #2E7DC4;
+  --gold:     #C89A1E;
+  --gold-lt:  #E8B82A;
+  --bg:       #E8ECF2;
+  --border:   #C4CDD8;
+  --border-lt:#D8E2EC;
+  --text:     #0F1C30;
+  --muted:    #5A6B80;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C4CDD8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #8896A8; }
+
+/* Inputs base */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+  @apply w-full border border-[#C4CDD8] rounded-md px-3 py-2 text-sm text-[#0F1C30]
+         bg-white outline-none transition-all duration-150
+         focus:border-[#2E7DC4] focus:ring-2 focus:ring-[#2E7DC4]/10;
+}
+
+input::placeholder,
+textarea::placeholder { color: #B0BAC8; }
+
+/* Animación de entrada */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both; }
