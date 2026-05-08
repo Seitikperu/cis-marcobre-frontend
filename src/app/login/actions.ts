@@ -26,8 +26,5 @@ export async function loginAction(formData: FormData) {
     return { error: 'Success but NO SESSION returned by Supabase!' }
   }
 
-  // If we reach here, login was successful and session exists.
-  // Instead of redirecting immediately, let's return a special string
-  // so the UI knows it succeeded.
-  return { error: `SUCCESS! User ID: ${data.user.id}. Session: YES. Try navigating manually.` }
+  redirect('/proyectos')
 }
