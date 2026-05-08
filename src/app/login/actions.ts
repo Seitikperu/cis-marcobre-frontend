@@ -18,17 +18,16 @@ export async function loginAction(formData: FormData) {
     password,
   })
 
-  // Escribir log
-  try {
-    const fs = require('fs')
-    const path = require('path')
-    const logPath = path.join(process.cwd(), 'middleware-debug.log')
-    fs.appendFileSync(logPath, `[${new Date().toISOString()}] ACTION: login attempt | Error: ${error?.message || 'NONE'} | User: ${data?.user?.id || 'NULL'} | Session: ${data?.session ? 'YES' : 'NO'}\n`)
-  } catch(e) {}
-
   if (error) {
-    return { error: 'Credenciales incorrectas. Verifica tu correo y contraseña.' }
+    return { error: `Auth Error: ${error.message} (Status: ${error.status})` }
   }
 
-  redirect('/proyectos')
+  if (!data?.session) {
+    return { error: 'Success but NO SESSION returned by Supabase!' }
+  }
+
+  // If we reach here, login was successful and session exists.
+  // Instead of redirecting immediately, let's return a special string
+  // so the UI knows it succeeded.
+  return { error: `SUCCESS! User ID: ${data.user.id}. Session: YES. Try navigating manually.` }
 }
