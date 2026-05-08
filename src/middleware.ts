@@ -26,12 +26,14 @@ export async function middleware(request: NextRequest) {
   const { data, error } = await supabase.auth.getUser()
   const user = data?.user
   
-  console.log('--- MIDDLEWARE DEBUG ---')
-  console.log('Pathname:', request.nextUrl.pathname)
-  console.log('Cookies present:', request.cookies.getAll().map(c => c.name))
-  console.log('User ID:', user?.id || 'NO USER')
-  console.log('Auth Error:', error?.message || 'NONE')
-  console.log('------------------------')
+  // Escribir a un archivo local para depuración
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const logPath = path.join(process.cwd(), 'middleware-debug.log')
+    const logLine = `[${new Date().toISOString()}] Path: ${request.nextUrl.pathname} | User: ${user?.id || 'NULL'} | Error: ${error?.message || 'NONE'} | Cookies: ${request.cookies.getAll().map(c => c.name).join(',')}\n`
+    fs.appendFileSync(logPath, logLine)
+  } catch (e) {}
 
   const { pathname } = request.nextUrl
 

@@ -13,10 +13,18 @@ export async function loginAction(formData: FormData) {
 
   const supabase = createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
+
+  // Escribir log
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const logPath = path.join(process.cwd(), 'middleware-debug.log')
+    fs.appendFileSync(logPath, `[${new Date().toISOString()}] ACTION: login attempt | Error: ${error?.message || 'NONE'} | User: ${data?.user?.id || 'NULL'} | Session: ${data?.session ? 'YES' : 'NO'}\n`)
+  } catch(e) {}
 
   if (error) {
     return { error: 'Credenciales incorrectas. Verifica tu correo y contraseña.' }
