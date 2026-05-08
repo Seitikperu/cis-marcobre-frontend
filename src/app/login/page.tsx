@@ -1,24 +1,30 @@
 'use client'
 import { useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { loginAction } from './actions'
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <button type="submit" disabled={pending}
+      className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
+      style={{ background: pending ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
+        cursor: pending ? 'wait' : 'pointer', border: 'none' }}>
+      {pending ? 'Verificando...' : 'Ingresar al sistema'}
+    </button>
+  )
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoading(true)
+  async function clientAction(formData: FormData) {
     setError('')
-    
-    const formData = new FormData(e.currentTarget)
     const result = await loginAction(formData)
-    
     if (result?.error) {
       setError(result.error)
-      setLoading(false)
     }
   }
 
@@ -102,7 +108,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form action={clientAction} className="space-y-4">
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Correo electrónico
@@ -123,12 +129,7 @@ export default function LoginPage() {
                   color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
                   width: '100%', outline: 'none' }}/>
             </div>
-            <button type="submit" disabled={loading}
-              className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
-              style={{ background: loading ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
-                cursor: loading ? 'wait' : 'pointer', border: 'none' }}>
-              {loading ? 'Verificando...' : 'Ingresar al sistema'}
-            </button>
+            <SubmitButton />
           </form>
 
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
