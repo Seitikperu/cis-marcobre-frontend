@@ -23,8 +23,16 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // IMPORTANTE: usar getUser() y no getSession() — getSession() no verifica con el servidor
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser()
+  const user = data?.user
+  
+  console.log('--- MIDDLEWARE DEBUG ---')
+  console.log('Pathname:', request.nextUrl.pathname)
+  console.log('Cookies present:', request.cookies.getAll().map(c => c.name))
+  console.log('User ID:', user?.id || 'NO USER')
+  console.log('Auth Error:', error?.message || 'NONE')
+  console.log('------------------------')
+
   const { pathname } = request.nextUrl
 
   // Rutas públicas que no necesitan auth
@@ -33,6 +41,7 @@ export async function middleware(request: NextRequest) {
 
   // Si no tiene sesión y trata de acceder a ruta protegida → login
   if (!user && !isPublic) {
+    console.log('Redirecting to /login because no user')
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)

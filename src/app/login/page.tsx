@@ -1,30 +1,25 @@
 'use client'
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { loginAction } from './actions'
 
 export default function LoginPage() {
-  const [email, setEmail]       = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading]   = useState(false)
-  const [error, setError]       = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-    if (error) {
-      setError('Credenciales incorrectas. Verifica tu correo y contraseña.')
+    
+    const formData = new FormData(e.currentTarget)
+    const result = await loginAction(formData)
+    
+    if (result?.error) {
+      setError(result.error)
       setLoading(false)
-      return
     }
-
-    // Redirigir via window.location para forzar recarga completa del servidor
-    // Esto garantiza que el middleware lea las cookies nuevas correctamente
-    window.location.href = '/proyectos'
   }
 
   return (
@@ -112,7 +107,7 @@ export default function LoginPage() {
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Correo electrónico
               </label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+              <input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="usuario@aesa.com.pe" required autoComplete="email"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
                   color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
@@ -122,7 +117,7 @@ export default function LoginPage() {
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Contraseña
               </label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+              <input type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••" required autoComplete="current-password"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
                   color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
