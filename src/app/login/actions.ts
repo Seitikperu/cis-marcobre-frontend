@@ -6,24 +6,20 @@ import { redirect } from 'next/navigation'
 export async function loginAction(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
-  
+
   if (!email || !password) {
     return { error: 'Por favor, completa todos los campos.' }
   }
 
   const supabase = createClient()
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
-    return { error: `Auth Error: ${error.message} (Status: ${error.status})` }
-  }
-
-  if (!data?.session) {
-    return { error: 'Success but NO SESSION returned by Supabase!' }
+    return { error: 'Credenciales incorrectas. Verifica tu correo y contraseña.' }
   }
 
   redirect('/proyectos')
