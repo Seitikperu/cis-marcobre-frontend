@@ -22,8 +22,7 @@ export default function LoginPage() {
       return
     }
 
-    // Redirigir via window.location para forzar recarga completa del servidor
-    // Esto garantiza que el middleware lea las cookies nuevas correctamente
+    // Recarga completa para que el servidor lea las cookies de sesión
     window.location.href = '/proyectos'
   }
 
@@ -112,26 +111,53 @@ export default function LoginPage() {
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Correo electrónico
               </label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="usuario@aesa.com.pe" required autoComplete="email"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
-                  width: '100%', outline: 'none' }}/>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="usuario@aesa.com.pe"
+                required
+                autoComplete="email"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#fff', borderRadius: '8px',
+                  padding: '11px 14px', fontSize: '13px',
+                  width: '100%', outline: 'none',
+                }}
+              />
             </div>
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Contraseña
               </label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••" required autoComplete="current-password"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
-                  width: '100%', outline: 'none' }}/>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#fff', borderRadius: '8px',
+                  padding: '11px 14px', fontSize: '13px',
+                  width: '100%', outline: 'none',
+                }}
+              />
             </div>
-            <button type="submit" disabled={loading}
+            <button
+              type="submit"
+              disabled={loading}
               className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
-              style={{ background: loading ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
-                cursor: loading ? 'wait' : 'pointer', border: 'none' }}>
+              style={{
+                background: loading ? '#9A7818' : '#C89A1E',
+                color: '#0B1E3D',
+                cursor: loading ? 'wait' : 'pointer',
+                border: 'none',
+              }}
+            >
               {loading ? 'Verificando...' : 'Ingresar al sistema'}
             </button>
           </form>
