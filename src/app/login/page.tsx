@@ -14,21 +14,21 @@ export default function LoginPage() {
     setError('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
+    if (error || !data.session) {
       setError('Credenciales incorrectas. Verifica tu correo y contraseña.')
       setLoading(false)
       return
     }
 
-    // Recarga completa para que el servidor lea las cookies de sesión
-    window.location.href = '/proyectos'
+    // Guardar sesión y forzar recarga completa del servidor
+    // El servidor leerá las cookies sb-* que Supabase acaba de escribir
+    window.location.replace('/proyectos')
   }
 
   return (
     <div className="min-h-screen flex" style={{ background: '#0B1E3D' }}>
-      {/* Fondo geométrico */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(160deg, #1A4B8C 0%, #0B1E3D 55%)',
@@ -82,8 +82,6 @@ export default function LoginPage() {
       <div className="relative z-10 flex items-center justify-center w-full lg:w-[460px] p-8"
         style={{ background: 'rgba(255,255,255,0.03)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="w-full max-w-sm animate-fade-up">
-
-          {/* Logo mobile */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center font-condensed font-extrabold text-base"
               style={{ background: '#C89A1E', color: '#0B1E3D' }}>A</div>
@@ -111,53 +109,26 @@ export default function LoginPage() {
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Correo electrónico
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="usuario@aesa.com.pe"
-                required
-                autoComplete="email"
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', borderRadius: '8px',
-                  padding: '11px 14px', fontSize: '13px',
-                  width: '100%', outline: 'none',
-                }}
-              />
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="usuario@aesa.com.pe" required autoComplete="email"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
+                  width: '100%', outline: 'none' }}/>
             </div>
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Contraseña
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                autoComplete="current-password"
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', borderRadius: '8px',
-                  padding: '11px 14px', fontSize: '13px',
-                  width: '100%', outline: 'none',
-                }}
-              />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••" required autoComplete="current-password"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
+                  width: '100%', outline: 'none' }}/>
             </div>
-            <button
-              type="submit"
-              disabled={loading}
+            <button type="submit" disabled={loading}
               className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
-              style={{
-                background: loading ? '#9A7818' : '#C89A1E',
-                color: '#0B1E3D',
-                cursor: loading ? 'wait' : 'pointer',
-                border: 'none',
-              }}
-            >
+              style={{ background: loading ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
+                cursor: loading ? 'wait' : 'pointer', border: 'none' }}>
               {loading ? 'Verificando...' : 'Ingresar al sistema'}
             </button>
           </form>

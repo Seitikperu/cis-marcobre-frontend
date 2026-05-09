@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  let response = NextResponse.next({ request: { headers: request.headers } })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,40 +13,55 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
+          // Primero setear en request
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          )
+          // Recrear response con cookies actualizadas
+          response = NextResponse.next({ request: { headers: request.headers } })
+          // Setear en response para que el browser las reciba
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  // IMPORTANTE: usar getUser() y no getSession() — getSession() no verifica con el servidor
+  // CRÍTICO: getUser() verifica la sesión con el servidor de Supabase
+  // NO usar getSession() — solo lee la cookie local sin verificar
   const { data: { user } } = await supabase.auth.getUser()
+
   const { pathname } = request.nextUrl
 
-  // Rutas públicas que no necesitan auth
-  const publicPaths = ['/login', '/api/debug', '/_next', '/favicon']
-  const isPublic = publicPaths.some(p => pathname.startsWith(p))
+  // Rutas que no necesitan autenticación
+  const isPublic = pathname.startsWith('/login') ||
+                   pathname.startsWith('/api/') ||
+                   pathname.startsWith('/_next') ||
+                   pathname === '/favicon.ico'
 
-  // Si no tiene sesión y trata de acceder a ruta protegida → login
+  // Sin sesión → login
   if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Si tiene sesión y va a /login → proyectos
+  // Con sesión en /login → proyectos
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/proyectos'
     return NextResponse.redirect(url)
   }
 
-  // CRÍTICO: devolver siempre supabaseResponse para que las cookies se propaguen
-  return supabaseResponse
+  // Redirigir raíz → proyectos si autenticado
+  if (user && pathname === '/') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/proyectos'
+    return NextResponse.redirect(url)
+  }
+
+  return response
 }
 
 export const config = {
