@@ -30,36 +30,57 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex" style={{ background: '#0B1E3D' }}>
+      {/* Fondo geométrico */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(160deg, #1A4B8C 0%, #0B1E3D 55%)',
-          clipPath: 'polygon(0 0, 58% 0, 42% 100%, 0 100%)',
-        }}/>
-        <div className="absolute" style={{
-          top: '35%', right: '6%', width: '280px', height: '280px',
-          border: '1px solid rgba(200,154,30,0.1)', borderRadius: '50%',
-          boxShadow: '0 0 0 55px rgba(200,154,30,0.03), 0 0 0 110px rgba(200,154,30,0.015)',
-        }}/>
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(160deg, #1A4B8C 0%, #0B1E3D 55%)',
+            clipPath: 'polygon(0 0, 58% 0, 42% 100%, 0 100%)',
+          }}
+        />
+        <div
+          className="absolute"
+          style={{
+            top: '35%', right: '6%',
+            width: '280px', height: '280px',
+            border: '1px solid rgba(200,154,30,0.1)',
+            borderRadius: '50%',
+            boxShadow: '0 0 0 55px rgba(200,154,30,0.03), 0 0 0 110px rgba(200,154,30,0.015)',
+          }}
+        />
       </div>
 
       {/* Panel izquierdo */}
       <div className="relative z-10 hidden lg:flex flex-col justify-between flex-1 p-14">
+        {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg flex items-center justify-center font-condensed font-extrabold text-xl"
-            style={{ background: '#C89A1E', color: '#0B1E3D' }}>A</div>
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center font-condensed font-extrabold text-xl"
+            style={{ background: '#C89A1E', color: '#0B1E3D' }}
+          >A</div>
           <div>
             <div className="font-condensed font-bold text-white text-lg tracking-widest uppercase">AESA</div>
-            <div className="text-xs tracking-widest uppercase" style={{ color: '#C89A1E' }}>Infraestructura y Minería</div>
+            <div className="text-xs tracking-widest uppercase" style={{ color: '#C89A1E' }}>
+              Infraestructura y Minería
+            </div>
           </div>
         </div>
+
+        {/* Hero */}
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs tracking-widest uppercase mb-7"
-            style={{ background: 'rgba(200,154,30,0.1)', border: '1px solid rgba(200,154,30,0.2)', color: '#E8B82A' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8B82A]"/>Operaciones Mineras
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs tracking-widest uppercase mb-7"
+            style={{ background: 'rgba(200,154,30,0.1)', border: '1px solid rgba(200,154,30,0.2)', color: '#E8B82A' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8B82A]" />
+            Operaciones Mineras
           </div>
           <h1 className="font-condensed font-bold text-white uppercase leading-none mb-6"
             style={{ fontSize: 'clamp(44px,5vw,68px)', letterSpacing: '-1px' }}>
-            Sistema de<br/><span style={{ color: '#C89A1E' }}>Reportes</span><br/>de Equipos
+            Sistema de<br />
+            <span style={{ color: '#C89A1E' }}>Reportes</span><br />
+            de Equipos
           </h1>
           <p className="text-base leading-relaxed max-w-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
             Control y trazabilidad de perforación, mantenimiento y demoras
@@ -74,18 +95,24 @@ export default function LoginPage() {
             ))}
           </div>
         </div>
+
         <p className="text-xs tracking-wider" style={{ color: 'rgba(255,255,255,0.2)' }}>
           © {new Date().getFullYear()} AESA · Todos los derechos reservados
         </p>
       </div>
 
-      {/* Panel derecho */}
-      <div className="relative z-10 flex items-center justify-center w-full lg:w-[460px] p-8"
-        style={{ background: 'rgba(255,255,255,0.03)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+      {/* Panel derecho — card de login */}
+      <div
+        className="relative z-10 flex items-center justify-center w-full lg:w-[460px] p-8"
+        style={{ background: 'rgba(255,255,255,0.03)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}
+      >
         <div className="w-full max-w-sm animate-fade-up">
+          {/* Logo mobile */}
           <div className="flex items-center gap-2 mb-10 lg:hidden">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center font-condensed font-extrabold text-base"
-              style={{ background: '#C89A1E', color: '#0B1E3D' }}>A</div>
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center font-condensed font-extrabold text-base"
+              style={{ background: '#C89A1E', color: '#0B1E3D' }}
+            >A</div>
             <span className="font-condensed font-bold text-white tracking-widest text-base uppercase">AESA</span>
           </div>
 
