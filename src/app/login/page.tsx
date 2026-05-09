@@ -1,31 +1,30 @@
 'use client'
 import { useState } from 'react'
-import { useFormStatus } from 'react-dom'
-import { loginAction } from './actions'
-
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  return (
-    <button type="submit" disabled={pending}
-      className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
-      style={{ background: pending ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
-        cursor: pending ? 'wait' : 'pointer', border: 'none' }}>
-      {pending ? 'Verificando...' : 'Ingresar al sistema'}
-    </button>
-  )
-}
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState('')
 
-  async function clientAction(formData: FormData) {
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
     setError('')
-    const result = await loginAction(formData)
-    if (result?.error) {
-      setError(result.error)
+
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError('Credenciales incorrectas. Verifica tu correo y contraseña.')
+      setLoading(false)
+      return
     }
+
+    // Redirigir via window.location para forzar recarga completa del servidor
+    // Esto garantiza que el middleware lea las cookies nuevas correctamente
+    window.location.href = '/proyectos'
   }
 
   return (
@@ -108,12 +107,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form action={clientAction} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Correo electrónico
               </label>
-              <input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)}
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="usuario@aesa.com.pe" required autoComplete="email"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
                   color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
@@ -123,13 +122,18 @@ export default function LoginPage() {
               <label className="block text-xs font-medium uppercase tracking-wider mb-2" style={{ color: '#5A6B80' }}>
                 Contraseña
               </label>
-              <input type="password" name="password" value={password} onChange={e => setPassword(e.target.value)}
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••" required autoComplete="current-password"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
                   color: '#fff', borderRadius: '8px', padding: '11px 14px', fontSize: '13px',
                   width: '100%', outline: 'none' }}/>
             </div>
-            <SubmitButton />
+            <button type="submit" disabled={loading}
+              className="w-full font-condensed font-bold uppercase tracking-widest text-sm py-3 rounded-lg transition-all duration-150 mt-2"
+              style={{ background: loading ? '#9A7818' : '#C89A1E', color: '#0B1E3D',
+                cursor: loading ? 'wait' : 'pointer', border: 'none' }}>
+              {loading ? 'Verificando...' : 'Ingresar al sistema'}
+            </button>
           </form>
 
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
