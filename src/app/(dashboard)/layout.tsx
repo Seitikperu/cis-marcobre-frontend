@@ -5,8 +5,13 @@ import Sidebar from '@/components/layout/Sidebar'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: { user } } = await (supabase as any).auth.getUser()
+
+  // Si no hay sesión, redirigir al login desde el servidor
+  if (!user) {
+    redirect('/login')
+  }
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: '#E8ECF2' }}>
